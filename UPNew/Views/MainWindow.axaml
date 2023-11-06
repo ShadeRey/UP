@@ -1,0 +1,303 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
+        xmlns:views="clr-namespace:UPNew.Views"
+        xmlns:viewModels="clr-namespace:UPNew.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="UPNew.Views.MainWindow"
+        x:DataType="viewModels:MainWindowViewModel"
+        Width="1200"
+        WindowState="Maximized"
+        Background="Transparent"
+        Title="UP">
+    <Design.DataContext>
+        <viewModels:MainWindowViewModel />
+    </Design.DataContext>
+    <Window.Styles>
+        <Style Selector="ListBoxItem">
+            <Style Selector="^:selected /template/ ContentPresenter">
+                <Setter Property="Background" Value="#e8e9e1"></Setter>
+            </Style>
+            <Style Selector="^:pointerover /template/ ContentPresenter">
+                <Setter Property="Background" Value="#e8e9e1"></Setter>
+            </Style>
+        </Style>
+        <Style Selector="DataGridTextColumn">
+            <Setter Property="Border.BorderThickness" Value="4"></Setter>
+            <Setter Property="Border.BorderBrush" Value="Black"></Setter>
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="Background" Value="#72a21f"></Setter>
+            <Setter Property="Foreground" Value="#fdffff"></Setter>
+            <Setter Property="BorderThickness" Value="3"></Setter>
+            <Setter Property="BorderBrush" Value="#000600"></Setter>
+            <Setter Property="CornerRadius" Value="10"></Setter>
+            <Setter Property="Height" Value="50"></Setter>
+            <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+            <Style Selector="^:pointerover /template/ ContentPresenter">
+                <Setter Property="Background" Value="#72a21f"></Setter>
+                <Setter Property="Foreground" Value="#fdffff"></Setter>
+                <Setter Property="BorderThickness" Value="3"></Setter>
+                <Setter Property="BorderBrush" Value="#000600"></Setter>
+            </Style>
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="White"></Setter>
+            <Setter Property="Foreground" Value="Black"></Setter>
+            <Setter Property="Width" Value="200"></Setter>
+            <Setter Property="Height" Value="13"></Setter>
+            <Setter Property="BorderThickness">
+                <Thickness>
+                    2 3 2 1
+                </Thickness>
+            </Setter>
+            <Setter Property="BorderBrush" Value="Black"></Setter>
+            <Setter Property="FontWeight" Value="Bold"></Setter>
+            <Style Selector="^:focus /template/ Border">
+                <Setter Property="BorderBrush" Value="Black" />
+                <Setter Property="BorderThickness">
+                    <Thickness>
+                        2 3 2 1
+                    </Thickness>
+                </Setter>
+                <Setter Property="Margin" Value="0 0 0 0"></Setter>
+                <Setter Property="CornerRadius" Value="3 3 3 3"></Setter>
+            </Style>
+            <Style Selector="^:focus-within /template/ Border">
+                <Setter Property="BorderBrush" Value="Black" />
+            </Style>
+        </Style>
+        <Style Selector="WrapPanel">
+            <Setter Property="VerticalAlignment" Value="Top"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+        </Style>
+        <Style Selector="Window > Grid">
+            <Setter Property="Background" Value="#5e5452"></Setter>
+            <Setter Property="VerticalAlignment" Value="Top"></Setter>
+        </Style>
+        <Style Selector="TabItem">
+            <Setter Property="FontSize" Value="10"></Setter>
+            <Setter Property="Foreground" Value="#fefefe"></Setter>
+            <Setter Property="Background" Value="#797166"></Setter>
+            <Setter Property="BorderThickness" Value="3 3 3 0"></Setter>
+            <Setter Property="BorderBrush" Value="#9e9994"></Setter>
+            <Setter Property="Margin" Value="10 4 10 -3"></Setter>
+            <Setter Property="CornerRadius" Value="5 5 0 0"></Setter>
+            <Style Selector="^:pointerover /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="#797166"></Setter>
+                <Setter Property="BorderThickness" Value="3 3 3 0"></Setter>
+                <Setter Property="BorderBrush" Value="#9e9994"></Setter>
+            </Style>
+            <Style Selector="^:pointerover /template/ ContentPresenter">
+                <Setter Property="Foreground" Value="#fefefe"></Setter>
+            </Style>
+            <Style Selector="^:selected /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="#e8e9e1"></Setter>
+                <Setter Property="BorderThickness" Value="3 3 3 0"></Setter>
+                <Setter Property="BorderBrush" Value="#9e9994"></Setter>
+            </Style>
+            <Style Selector="^:selected /template/ ContentPresenter">
+                <Setter Property="Foreground" Value="Black"></Setter>
+            </Style>
+        </Style>
+        <Style Selector="TabItem:selected /template/ Border#PART_SelectedPipe">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="TabControl">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border>
+                        <DockPanel>
+                            <ItemsPresenter Name="PART_ItemsPresenter"
+                                            ItemsPanel="{TemplateBinding ItemsPanel}"
+                                            DockPanel.Dock="{TemplateBinding TabStripPlacement}" />
+                            <Border
+                                Name="PART_SelectedContentHost"
+                                Margin="{TemplateBinding Padding}"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Background="#e8e9e1"
+                                BorderBrush="#625353"
+                                BorderThickness="6 0 6 6"
+                                CornerRadius="20"
+                                Padding="4">
+                                <ContentPresenter Content="{TemplateBinding SelectedContent}"
+                                                  ContentTemplate="{TemplateBinding SelectedContentTemplate}" />
+                            </Border>
+                        </DockPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="DatePicker /template/ Grid#PART_ButtonContentGrid > TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="ContextMenu">
+            <Setter Property="BorderThickness" Value="2"></Setter>
+            <Setter Property="BorderBrush" Value="#060606"></Setter>
+            <Setter Property="Padding" Value="5"></Setter>
+        </Style>
+        <Style Selector="MenuItem">
+            <Setter Property="Margin" Value="5"></Setter>
+            <Setter Property="BorderThickness" Value="2"></Setter>
+            <Setter Property="BorderBrush" Value="#060606"></Setter>
+            <Setter Property="CornerRadius" Value="5"></Setter>
+            <Setter Property="Background" Value="#72a21f"></Setter>
+            <Setter Property="Foreground" Value="#fefefe"></Setter>
+            <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
+        </Style>
+        <Style Selector="AccessText">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="Background" Value="#72a21f"></Setter>
+            <Setter Property="Foreground" Value="#fdffff"></Setter>
+            <Setter Property="BorderThickness" Value="3"></Setter>
+            <Setter Property="BorderBrush" Value="#000600"></Setter>
+            <Setter Property="CornerRadius" Value="10"></Setter>
+            <Setter Property="Height" Value="50"></Setter>
+            <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+            <Style Selector="^:pointerover /template/ Border#Background">
+                <Setter Property="Background" Value="#72a21f"></Setter>
+                <Setter Property="BorderThickness" Value="3"></Setter>
+                <Setter Property="BorderBrush" Value="#000600"></Setter>
+            </Style>
+            <Style Selector="^:pointerover">
+                <Setter Property="Foreground" Value="#fdffff" />
+            </Style>
+        </Style>
+    </Window.Styles>
+    <Border
+        Background="#5e5452"
+        BorderBrush="#625353"
+        BorderThickness="6"
+        CornerRadius="20"
+        Padding="4">
+        <Grid>
+            <TabControl>
+                <TabItem Header="Student registration">
+                    <Grid Background="#e8e9e1" Name="StudentGrid">
+                        <DockPanel LastChildFill="True">
+                            <StackPanel Name="SearchPanel" HorizontalAlignment="Center" Spacing="5"
+                                        DockPanel.Dock="Top" Orientation="Horizontal">
+                                <TextBox Name="SearchBox" Text="{Binding SearchText}"></TextBox>
+                                <ComboBox Name="ColumnComboBox"
+                                          SelectedItem="{Binding SelectedColumn}"
+                                          ItemsSource="{Binding FilterFields}"
+                                          DisplayMemberBinding="{ReflectionBinding Key}" />
+                                <Button Name="NewStudent" Content="Create"
+                                        Click="NewStudent_OnClick">
+                                </Button>
+                            </StackPanel>
+                            <ListBox IsVisible="True" Background="#e8e9e1" Name="StudentList"
+                                     ItemsSource="{Binding ClientsList}"
+                                     SelectedItem="{Binding ClientsSelectedItem}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <views:StudentGrid DataContext="{Binding  }">
+                                            <views:StudentGrid.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem BorderThickness="0" x:CompileBindings="False"
+                                                              IsEnabled="False">
+                                                        <MenuItem.Header>
+                                                            <MultiBinding StringFormat="{}{0} {1}">
+                                                                <MultiBinding.Bindings>
+                                                                    <Binding Path="LastName" />
+                                                                    <Binding Path="FirstName" />
+                                                                </MultiBinding.Bindings>
+                                                            </MultiBinding>
+                                                        </MenuItem.Header>
+                                                    </MenuItem>
+                                                    <MenuItem Header="Edit" Name="popupEdit" Click="PopupEdit_OnClick"></MenuItem>
+                                                    <MenuItem Header="Delete" Name="popupDelete"
+                                                              Click="PopupDelete_OnClick">
+                                                    </MenuItem>
+                                                </ContextMenu>
+                                            </views:StudentGrid.ContextMenu>
+                                        </views:StudentGrid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </DockPanel>
+                        <StackPanel Name="RegStudentPanel" IsVisible="False" HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" Spacing="10"
+                                    Margin="0 10 0 0">
+                            <TextBlock Text="Student registration" HorizontalAlignment="Center" FontSize="20" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="First name: " VerticalAlignment="Center"></TextBlock>
+                                <TextBox x:Name="FirstNameTextBox" Text="{Binding FirstName}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Last name: " VerticalAlignment="Center"></TextBlock>
+                                <TextBox x:Name="LastNameTextBox" Text="{Binding LastName}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Phone number: " VerticalAlignment="Center"></TextBlock>
+                                <TextBox x:Name="PhoneNumberTextBox" Text="{Binding PhoneNumber}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Birth date: " VerticalAlignment="Center"></TextBlock>
+                                <DatePicker MonthFormat="MM" x:Name="BirthDateDatePicker"
+                                            SelectedDate="{Binding BirthDate}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Previous experience: " VerticalAlignment="Center"></TextBlock>
+                                <TextBox x:Name="PreviousExperienceTextBox" Text="{Binding PreviousExperience}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Language level: " VerticalAlignment="Center"></TextBlock>
+                                <ComboBox x:Name="LanguageLevelComboBox" HorizontalAlignment="Center"
+                                          ItemsSource="{Binding LanguageLevels}"
+                                          SelectedItem="{Binding LanguageLevel}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Language needs: " VerticalAlignment="Center"></TextBlock>
+                                <TextBox x:Name="LanguageNeedsTextBox" Text="{Binding LanguageNeeds}" />
+                            </StackPanel>
+                            <StackPanel Spacing="20" Orientation="Horizontal" HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <Button Name="ProfileCancel" Content="Back" Click="ProfileCancel_OnClick"
+                                        Background="#d94a1e">
+                                </Button>
+                                <Button Name="ProfileChange" IsVisible="False" Content="Save"
+                                        Click="ProfiveChange_OnClick">
+                                </Button>
+                                <Button Name="ProfileCreate" IsVisible="False" Content="Create"
+                                        Click="ProfileCreate_OnClick" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Course management">
+                    <Grid Background="#e8e9e1" Name="CourseGrid">
+                        <ListBox IsVisible="True" Background="#e8e9e1" Name="CourseList"
+                                     ItemsSource="{Binding CoursesList}"
+                                     SelectedItem="{Binding CourseSelectedItem}">
+                            <ListBoxItem ></ListBoxItem>
+                            <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <views:CourseGrid DataContext="{Binding  }">
+                                            
+                                        </views:CourseGrid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Financial accounting"></TabItem>
+                <TabItem Header="Attendance accounting"></TabItem>
+                <TabItem Header="Reports"></TabItem>
+            </TabControl>
+        </Grid>
+    </Border>
+</Window>
