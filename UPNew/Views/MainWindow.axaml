@@ -281,17 +281,33 @@
                 <TabItem Header="Course management">
                     <Grid Background="#e8e9e1" Name="CourseGrid">
                         <ListBox IsVisible="True" Background="#e8e9e1" Name="CourseList"
-                                     ItemsSource="{Binding CoursesList}"
-                                     SelectedItem="{Binding CourseSelectedItem}">
-                            <ListBoxItem ></ListBoxItem>
+                                 ItemsSource="{Binding CoursesList}"
+                                 SelectedItem="{Binding CourseSelectedItem}"
+                                 SelectionChanged="CourseList_OnSelectionChanged">
                             <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <views:CourseGrid DataContext="{Binding  }">
-                                            
-                                        </views:CourseGrid>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
+                                <DataTemplate>
+                                    <views:CourseGrid DataContext="{Binding  }">
+
+                                    </views:CourseGrid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <DockPanel>
+                            <StackPanel>
+                                <Button IsVisible="False" Name="Back" Background="#d94a1e" Content="Back" Click="Back_OnClick"></Button>
+                                <ListBox IsVisible="False" Background="#e8e9e1" Name="GroupList"
+                                         ItemsSource="{Binding GroupsList}"
+                                         SelectedItem="{Binding GroupSelectedItem}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <views:GroupGrid DataContext="{Binding }">
+
+                                            </views:GroupGrid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
+                        </DockPanel>
                     </Grid>
                 </TabItem>
                 <TabItem Header="Financial accounting"></TabItem>

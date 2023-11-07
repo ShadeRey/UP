@@ -8,4 +8,5 @@ public class Course
     public string DifficultyLevel { get; set; }
     public int MaxStudents { get; set; }
     public int Price { get; set; }
+    public int CurrentStudent { get; set; }
 }

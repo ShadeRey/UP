@@ -14,13 +14,6 @@
         <models:Course />
     </Design.DataContext>
     <Border BorderThickness="3" BorderBrush="#b0b0a6" CornerRadius="10">
-        <Button Name="CourseBtn"
-                BorderThickness="0"
-                Background="Transparent"
-                Click="CourseBtn_OnClick"
-                Width="800"
-                Height="100"
-                CornerRadius="10">
             <Grid ColumnDefinitions="Auto, Auto, Auto, Auto, *">
                 <TextBlock Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18"
                            Foreground="#fdfdfb" Margin="15, 0, 20, 0" Text="{Binding Id, StringFormat={} {0}.}">
@@ -55,31 +48,12 @@
                         </TextBlock.Effect>
                     </TextBlock>
                 </Grid>
-                <Grid Grid.Column="3" RowDefinitions="*, *, *" Margin="0 3 0 0">
+                <Grid Grid.Column="3" RowDefinitions="*" Margin="0 3 0 0">
                     <TextBlock Grid.Row="0" Margin="0 0 0 30" FontSize="12" Foreground="#fdfdfb"
                                HorizontalAlignment="Left"
                                Text="{Binding DifficultyLevel}">
                         <TextBlock.Effect>
                             <DropShadowDirectionEffect ShadowDepth="-80" Direction="2.2" Opacity="1" BlurRadius="1">
-                            </DropShadowDirectionEffect>
-                        </TextBlock.Effect>
-                    </TextBlock>
-                    <TextBlock Grid.Row="1" VerticalAlignment="Center" FontSize="12" Foreground="#383830"
-                               Margin="0 0 0 0"
-                               HorizontalAlignment="Left" Text="Members:">
-                        <!-- Text="{Binding PreviousExperience}"> -->
-                        <TextBlock.Effect>
-                            <DropShadowDirectionEffect ShadowDepth="20" Direction="4" Opacity="1" BlurRadius="3"
-                                                       Color="#6d6c64">
-                            </DropShadowDirectionEffect>
-                        </TextBlock.Effect>
-                    </TextBlock>
-                    <TextBlock Grid.Row="2" VerticalAlignment="Top" FontSize="12" Foreground="#383830"
-                               HorizontalAlignment="Left" Text="{Binding MaxStudents, StringFormat={} 35/{0}}">
-                        <!-- Text="{Binding LanguageNeeds}"> -->
-                        <TextBlock.Effect>
-                            <DropShadowDirectionEffect ShadowDepth="20" Direction="4" Opacity="1" BlurRadius="3"
-                                                       Color="#6d6c64">
                             </DropShadowDirectionEffect>
                         </TextBlock.Effect>
                     </TextBlock>
@@ -93,7 +67,7 @@
                 </Border>
                 <Grid Grid.Column="4" RowDefinitions="*">
                     <TextBlock Grid.Row="0" VerticalAlignment="Center" Margin="20 0 55 0" HorizontalAlignment="Center"
-                               Foreground="#fdfdfb" FontSize="18" Text="{Binding Price, StringFormat={} {0}₽}">
+                               Foreground="#fdfdfb" FontSize="18" Text="{Binding Price, StringFormat={} {0} $}">
                         <!-- Text="{Binding LanguageLevel}"> -->
                         <TextBlock.Effect>
                             <DropShadowDirectionEffect ShadowDepth="-80" Direction="2.2" Opacity="1" BlurRadius="1">
@@ -113,6 +87,5 @@
                     </TextBlock>
                 </Grid>
             </Grid>
-        </Button>
     </Border>
 </UserControl>

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reactive.Linq;
@@ -112,5 +113,21 @@ public partial class MainWindow : Window
     {
         ViewModel.RefreshDataView();
         NewStudent.IsVisible = true;
+    }
+
+    private void CourseList_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        GroupList.IsVisible = true;
+        CourseList.IsVisible = false;
+        Back.IsVisible = true;
+        ViewModel.CourseSelectedItem = CourseList.SelectedItem as Course;
+        ViewModel.RefreshDataView();
+    }
+
+    private void Back_OnClick(object? sender, RoutedEventArgs e)
+    {
+        GroupList.IsVisible = false;
+        CourseList.IsVisible = true;
+        Back.IsVisible = false;
     }
 }

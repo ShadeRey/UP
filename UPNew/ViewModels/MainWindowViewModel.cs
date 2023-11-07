@@ -4,8 +4,10 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Text.RegularExpressions;
 using Avalonia.Collections;
 using Avalonia.Media;
+using DynamicData;
 using MySqlConnector;
 using ReactiveUI;
 using UP.Models;
@@ -14,15 +16,12 @@ namespace UPNew.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    //string connectionString = "Server=10.10.1.24;Database=pro1_23;User Id=user_01;Password=user01pro";
-    string connectionString = "Server=localhost;Database=UP;User Id=root;Password=sharaga228;";
+    string connectionString = "Server=10.10.1.24;Database=pro1_23;User Id=user_01;Password=user01pro";
+    //string connectionString = "Server=localhost;Database=UP;User Id=root;Password=sharaga228;";
 
-    
 
     #region StudentPage
 
-    
-    
     private AvaloniaList<Clients> _clientsList = new AvaloniaList<Clients>();
     private string _firstName;
     private string _lastName;
@@ -200,6 +199,12 @@ public class MainWindowViewModel : ViewModelBase
 
     public void RefreshDataView()
     {
+        if (CourseSelectedItem is not null)
+        {
+            _groupsFull = GetGroupById(CourseSelectedItem.Id);
+            GroupsList = new(_groupsFull);
+        }
+
         _courseFull = GetCoursesDataFromDatabase();
         CoursesList = new(_courseFull);
         _clientsFull = GetClientsDataFromDatabase();
@@ -345,29 +350,28 @@ public class MainWindowViewModel : ViewModelBase
             Console.WriteLine("Error");
         }
     }
-    
-    
-    
+
     #endregion
-    
-    
-    
+
+
+    #region CoursePage
+
     private AvaloniaList<Course> _coursesList = new AvaloniaList<Course>();
     private Course _courseselectedItem;
     private List<Course> _courseFull;
-    
+
     public AvaloniaList<Course> CoursesList
     {
         get => _coursesList;
         set => this.RaiseAndSetIfChanged(ref _coursesList, value);
     }
-    
+
     public Course CourseSelectedItem
     {
         get => _courseselectedItem;
         set => this.RaiseAndSetIfChanged(ref _courseselectedItem, value);
     }
-    
+
     public List<Course> GetCoursesDataFromDatabase()
     {
         List<Course> data = new List<Course>();
@@ -390,7 +394,6 @@ public class MainWindowViewModel : ViewModelBase
                     Name = reader.GetString("Name"),
                     Duration = reader.GetInt32("Duration"),
                     DifficultyLevel = reader.GetString("DifficultyLevel"),
-                    MaxStudents = reader.GetInt32("MaxStudents"),
                     Price = reader.GetInt32("Price")
                 };
                 data.Add(item);
@@ -404,6 +407,76 @@ public class MainWindowViewModel : ViewModelBase
         {
             connection.Close();
         }
+
         return data;
+    }
+
+    public List<Groups> GetGroupById(int courseId)
+    {
+        List<Groups> groupsList = new List<Groups>();
+
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            connection.Open();
+
+            string countquery = "select COUNT(*) from ClientGroup where `Group` = @Group";
+            string groupsWhereQuery = """
+                            select G.*,
+                                  T.FirstName AS TeacherName,
+                                  T.LastName AS TeacherSurname,
+                                  COUNT(CG.Client) AS CurrentStudents
+                           from ClientGroup CG
+                           join pro1_23.`Groups` G on CG.`Group` = G.Id
+                           join pro1_23.Teacher T on G.Teacher = T.Id
+                           group by CG.`Group`
+                           """;
+
+            MySqlCommand cmd = new MySqlCommand(groupsWhereQuery, connection);
+            cmd.Parameters.AddWithValue("@Course", courseId);
+
+            using (MySqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Groups groups = new Groups
+                    {
+                        Id = reader.GetInt32("Id"),
+                        Name = reader.GetString("Name"),
+                        StartDate = reader.GetDateTimeOffset("StartDate"),
+                        EndDate = reader.GetDateTimeOffset("EndDate"),
+                        Course = reader.GetInt32("Course"),
+                        Teacher = reader.GetInt32("Teacher"),
+                        CurrentStudents = reader.GetInt32("CurrentStudents"),
+                        MaxStudents = reader.GetInt32("MaxStudents"),
+                        TeacherName = reader.GetString("TeacherName"),
+                        TeacherSurname = reader.GetString("TeacherSurname")
+                    };
+                    groupsList.Add(groups);
+                }
+            }
+        }
+
+        return groupsList;
+    }
+
+    #endregion
+
+
+    private AvaloniaList<Groups> _groupsList = new AvaloniaList<Groups>();
+
+
+    private List<Groups> _groupsFull;
+    private Groups _groupsselectedItem;
+
+    public Groups GroupSelectedItem
+    {
+        get => _groupsselectedItem;
+        set => this.RaiseAndSetIfChanged(ref _groupsselectedItem, value);
+    }
+
+    public AvaloniaList<Groups> GroupsList
+    {
+        get => _groupsList;
+        set => this.RaiseAndSetIfChanged(ref _groupsList, value);
     }
 }
