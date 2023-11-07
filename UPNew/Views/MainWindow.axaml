@@ -292,12 +292,31 @@
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
-                        <DockPanel>
+                        <DockPanel Name="StudentsPanel">
                             <StackPanel>
-                                <Button IsVisible="False" Name="Back" Background="#d94a1e" Content="Back" Click="Back_OnClick"></Button>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Name="StudentsBack" IsVisible="False" Background="#d94a1e" Content="Back" Click="StudentsBack_OnClick"></Button>
+                                    <Button Name="NewStudentToGroup" IsVisible="False" Margin="200 0 0 0" Background="#207dc1" Content="Add new student" Click="NewStudentToGroup_OnClick"></Button>
+                                </StackPanel>
+                                <ListBox IsVisible="False" Name="ClientsList" Background="#e8e9e1"
+                                         ItemsSource="{Binding StudentsList}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <views:StudentGrid DataContext="{Binding }">
+
+                                            </views:StudentGrid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
+                        </DockPanel>
+                        <DockPanel Name="GroupPanel">
+                            <StackPanel>
+                                <Button IsVisible="False" Name="GroupBack" Background="#d94a1e" Content="Back" Click="Back_OnClick"></Button>
                                 <ListBox IsVisible="False" Background="#e8e9e1" Name="GroupList"
                                          ItemsSource="{Binding GroupsList}"
-                                         SelectedItem="{Binding GroupSelectedItem}">
+                                         SelectedItem="{Binding GroupSelectedItem}"
+                                         SelectionChanged="GroupList_OnSelectionChanged">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <views:GroupGrid DataContext="{Binding }">

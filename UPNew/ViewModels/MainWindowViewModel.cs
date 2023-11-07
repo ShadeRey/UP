@@ -16,8 +16,8 @@ namespace UPNew.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    string connectionString = "Server=10.10.1.24;Database=pro1_23;User Id=user_01;Password=user01pro";
-    //string connectionString = "Server=localhost;Database=UP;User Id=root;Password=sharaga228;";
+    //string connectionString = "Server=10.10.1.24;Database=pro1_23;User Id=user_01;Password=user01pro";
+    string connectionString = "Server=localhost;Database=UP;User Id=root;Password=sharaga228;";
 
 
     #region StudentPage
@@ -205,6 +205,12 @@ public class MainWindowViewModel : ViewModelBase
             GroupsList = new(_groupsFull);
         }
 
+        if (GroupSelectedItem is not null)
+        {
+            
+            _studentsFull = GetStudentById(GroupSelectedItem.Id);
+            StudentsList = new(_studentsFull);
+        }
         _courseFull = GetCoursesDataFromDatabase();
         CoursesList = new(_courseFull);
         _clientsFull = GetClientsDataFromDatabase();
@@ -318,8 +324,22 @@ public class MainWindowViewModel : ViewModelBase
                 cmd.Parameters.AddWithValue("@LanguageLevel", LanguageLevel);
                 cmd.Parameters.AddWithValue("@LanguageNeeds", LanguageNeeds);
                 int rowsAffected = cmd.ExecuteNonQuery();
+                if (rowsAffected > 0)
+                {
+                    // Получите Id вставленного клиента
+                    string getLastInsertIdQuery = "SELECT LAST_INSERT_ID()";
+                    cmd.CommandText = getLastInsertIdQuery;
+                    int clientId = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    // Вставьте запись в таблицу ClientGroup
+                    string insertClientGroupQuery = "INSERT INTO ClientGroup (Client) VALUES (@Client)";
+                    cmd.CommandText = insertClientGroupQuery;
+                    cmd.Parameters.AddWithValue("@Client", clientId);
+                    rowsAffected = cmd.ExecuteNonQuery();
+                }
                 return rowsAffected;
             }
+            
         }
     }
 
@@ -419,15 +439,15 @@ public class MainWindowViewModel : ViewModelBase
         {
             connection.Open();
 
-            string countquery = "select COUNT(*) from ClientGroup where `Group` = @Group";
             string groupsWhereQuery = """
                             select G.*,
                                   T.FirstName AS TeacherName,
                                   T.LastName AS TeacherSurname,
                                   COUNT(CG.Client) AS CurrentStudents
                            from ClientGroup CG
-                           join pro1_23.`Groups` G on CG.`Group` = G.Id
-                           join pro1_23.Teacher T on G.Teacher = T.Id
+                           join `Groups` G on CG.`Group` = G.Id
+                           join Teacher T on G.Teacher = T.Id
+                           WHERE G.Course = @Course
                            group by CG.`Group`
                            """;
 
@@ -463,8 +483,6 @@ public class MainWindowViewModel : ViewModelBase
 
 
     private AvaloniaList<Groups> _groupsList = new AvaloniaList<Groups>();
-
-
     private List<Groups> _groupsFull;
     private Groups _groupsselectedItem;
 
@@ -478,5 +496,53 @@ public class MainWindowViewModel : ViewModelBase
     {
         get => _groupsList;
         set => this.RaiseAndSetIfChanged(ref _groupsList, value);
+    }
+    
+    
+    private AvaloniaList<Clients> _studentsList = new AvaloniaList<Clients>();
+    private List<Clients> _studentsFull;
+    public AvaloniaList<Clients> StudentsList
+    {
+        get => _studentsList;
+        set => this.RaiseAndSetIfChanged(ref _studentsList, value);
+    }
+    public List<Clients> GetStudentById(int groupId)
+    {
+        List<Clients> studentsList = new List<Clients>();
+
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            connection.Open();
+
+            string groupsWhereQuery = """
+                                       SELECT Clients.* FROM Clients
+                                      INNER JOIN ClientGroup ON Clients.Id = ClientGroup.Client
+                                      WHERE ClientGroup.Group = @Groups
+                                      """;
+
+            MySqlCommand cmd = new MySqlCommand(groupsWhereQuery, connection);
+            cmd.Parameters.AddWithValue("@Groups", groupId);
+
+            using (MySqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Clients clients = new Clients
+                    {
+                        Id = reader.GetInt32("Id"),
+                        FirstName = reader.GetString("FirstName"),
+                        LastName = reader.GetString("LastName"),
+                        PhoneNumber = reader.GetString("PhoneNumber"),
+                        LanguageLevel = reader.GetString("LanguageLevel"),
+                        BirthDate = reader.GetDateTimeOffset("BirthDate"),
+                        PreviousExperience = reader.GetString("PreviousExperience"),
+                        LanguageNeeds = reader.GetString("LanguageNeeds")
+                    };
+                    studentsList.Add(clients);
+                }
+            }
+        }
+
+        return studentsList;
     }
 }

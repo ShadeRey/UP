@@ -52,7 +52,7 @@
                 <TextBlock Grid.Row="1" VerticalAlignment="Top" FontSize="12" Foreground="#383830"
                            HorizontalAlignment="Center">
                     <TextBlock.Text>
-                        <MultiBinding StringFormat="{}{0} {1}">
+                        <MultiBinding StringFormat="{}{0}/{1}">
                             <MultiBinding.Bindings>
                                 <Binding Path="CurrentStudents"/>
                                 <Binding Path="MaxStudents"/>

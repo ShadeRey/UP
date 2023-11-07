@@ -118,16 +118,51 @@ public partial class MainWindow : Window
     private void CourseList_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         GroupList.IsVisible = true;
+        GroupBack.IsVisible = true;
         CourseList.IsVisible = false;
-        Back.IsVisible = true;
+        ClientsList.IsVisible = false;
+        StudentsBack.IsVisible = false;
+        NewStudentToGroup.IsVisible = false;
         ViewModel.CourseSelectedItem = CourseList.SelectedItem as Course;
         ViewModel.RefreshDataView();
     }
 
     private void Back_OnClick(object? sender, RoutedEventArgs e)
     {
-        GroupList.IsVisible = false;
         CourseList.IsVisible = true;
-        Back.IsVisible = false;
+        GroupList.IsVisible = false;
+        GroupBack.IsVisible = false;
+        ClientsList.IsVisible = false;
+        StudentsBack.IsVisible = false;
+        NewStudentToGroup.IsVisible = false;
+    }
+
+    private void GroupList_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        StudentsBack.IsVisible = true;
+        NewStudentToGroup.IsVisible = true;
+        ClientsList.IsVisible = true;
+        GroupList.IsVisible = false;
+        CourseList.IsVisible = false;
+        GroupBack.IsVisible = false;
+        ViewModel.GroupSelectedItem = GroupList.SelectedItem as Groups;
+        ViewModel.RefreshDataView();
+    }
+
+    private void StudentsBack_OnClick(object? sender, RoutedEventArgs e)
+    {
+        GroupList.IsVisible = true;
+        GroupBack.IsVisible = true;
+        StudentsBack.IsVisible = false;
+        NewStudentToGroup.IsVisible = false;
+        ClientsList.IsVisible = false;
+        CourseList.IsVisible = false;
+        
+        GroupList.SelectedItem = null;
+    }
+
+    private void NewStudentToGroup_OnClick(object? sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
     }
 }
