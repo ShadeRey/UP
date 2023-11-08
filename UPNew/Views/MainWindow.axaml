@@ -327,9 +327,41 @@
                                 </ListBox>
                             </StackPanel>
                         </DockPanel>
+                        <DockPanel Name="StudentsWithoutGroupsPanel">
+                            <StackPanel>
+                                <Button IsVisible="False" Name="StudentsWithoutGroupsBack" Background="#d94a1e" Content="Back" Click="StudentsWithoutGroupsBack_OnClick"></Button>
+                                <ListBox IsVisible="False" Background="#e8e9e1" Name="StudentWithouGroupList"
+                                         ItemsSource="{Binding StudentWithoutGroupsList}"
+                                         SelectedItem="{Binding StudentsWithoutGroupSelectedItem}"
+                                         SelectionChanged="StudentWithouGroupList_OnSelectionChanged">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <views:StudentGrid DataContext="{Binding }">
+
+                                            </views:StudentGrid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
+                        </DockPanel>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Financial accounting"></TabItem>
+                <TabItem Header="Financial accounting">
+                    <Grid Background="#e8e9e1" Name="FinancialGrid">
+                        <ListBox IsVisible="True" Background="#e8e9e1" Name="FinancialList"
+                                 ItemsSource="{Binding FinancialList}"
+                                 SelectedItem="{Binding FinancialSelectedItem}"
+                                 SelectionChanged="CourseList_OnSelectionChanged">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <views:FinancialOperationGrid DataContext="{Binding  }">
+
+                                    </views:FinancialOperationGrid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </TabItem>
                 <TabItem Header="Attendance accounting"></TabItem>
                 <TabItem Header="Reports"></TabItem>
             </TabControl>

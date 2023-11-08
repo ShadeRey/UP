@@ -16,8 +16,8 @@ namespace UPNew.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    //string connectionString = "Server=10.10.1.24;Database=pro1_23;User Id=user_01;Password=user01pro";
-    string connectionString = "Server=localhost;Database=UP;User Id=root;Password=sharaga228;";
+    string connectionString = "Server=10.10.1.24;Database=pro1_23;User Id=user_01;Password=user01pro";
+    //string connectionString = "Server=localhost;Database=UP;User Id=root;Password=sharaga228;";
 
 
     #region StudentPage
@@ -122,6 +122,14 @@ public class MainWindowViewModel : ViewModelBase
         this.WhenAnyValue(x => x.SelectedColumn)
             .DistinctUntilChanged()
             .Subscribe(x => SearchBySelectedColumn());
+
+        this.WhenAnyValue(x => x.StudentsWithoutGroupSelectedItem)
+            .DistinctUntilChanged()
+            .Subscribe(x =>
+            {
+                if (x is null) return;
+                AddClientToGroup();
+            });
     }
 
     public List<Clients> GetClientsDataFromDatabase()
@@ -207,14 +215,18 @@ public class MainWindowViewModel : ViewModelBase
 
         if (GroupSelectedItem is not null)
         {
-            
             _studentsFull = GetStudentById(GroupSelectedItem.Id);
             StudentsList = new(_studentsFull);
         }
+
         _courseFull = GetCoursesDataFromDatabase();
         CoursesList = new(_courseFull);
         _clientsFull = GetClientsDataFromDatabase();
         ClientsList = new(_clientsFull);
+        _studentsWitoutGroupsFull = GetClientsWithoutGroup();
+        StudentWithoutGroupsList = new(_studentsWitoutGroupsFull);
+        _financialOperationsFull = GetFinancialDataFromDatabase();
+        FinancialList = new(_financialOperationsFull);
     }
 
     public Clients GetClientFromDatabase(int Id)
@@ -326,20 +338,18 @@ public class MainWindowViewModel : ViewModelBase
                 int rowsAffected = cmd.ExecuteNonQuery();
                 if (rowsAffected > 0)
                 {
-                    // Получите Id вставленного клиента
                     string getLastInsertIdQuery = "SELECT LAST_INSERT_ID()";
                     cmd.CommandText = getLastInsertIdQuery;
                     int clientId = Convert.ToInt32(cmd.ExecuteScalar());
 
-                    // Вставьте запись в таблицу ClientGroup
                     string insertClientGroupQuery = "INSERT INTO ClientGroup (Client) VALUES (@Client)";
                     cmd.CommandText = insertClientGroupQuery;
                     cmd.Parameters.AddWithValue("@Client", clientId);
                     rowsAffected = cmd.ExecuteNonQuery();
                 }
+
                 return rowsAffected;
             }
-            
         }
     }
 
@@ -440,16 +450,16 @@ public class MainWindowViewModel : ViewModelBase
             connection.Open();
 
             string groupsWhereQuery = """
-                            select G.*,
-                                  T.FirstName AS TeacherName,
-                                  T.LastName AS TeacherSurname,
-                                  COUNT(CG.Client) AS CurrentStudents
-                           from ClientGroup CG
-                           join `Groups` G on CG.`Group` = G.Id
-                           join Teacher T on G.Teacher = T.Id
-                           WHERE G.Course = @Course
-                           group by CG.`Group`
-                           """;
+                                       select G.*,
+                                             T.FirstName AS TeacherName,
+                                             T.LastName AS TeacherSurname,
+                                             COUNT(CG.Client) AS CurrentStudents
+                                      from ClientGroup CG
+                                      join `Groups` G on CG.`Group` = G.Id
+                                      join Teacher T on G.Teacher = T.Id
+                                      WHERE G.Course = @Course
+                                      group by CG.`Group`
+                                      """;
 
             MySqlCommand cmd = new MySqlCommand(groupsWhereQuery, connection);
             cmd.Parameters.AddWithValue("@Course", courseId);
@@ -497,15 +507,17 @@ public class MainWindowViewModel : ViewModelBase
         get => _groupsList;
         set => this.RaiseAndSetIfChanged(ref _groupsList, value);
     }
-    
-    
+
+
     private AvaloniaList<Clients> _studentsList = new AvaloniaList<Clients>();
     private List<Clients> _studentsFull;
+
     public AvaloniaList<Clients> StudentsList
     {
         get => _studentsList;
         set => this.RaiseAndSetIfChanged(ref _studentsList, value);
     }
+
     public List<Clients> GetStudentById(int groupId)
     {
         List<Clients> studentsList = new List<Clients>();
@@ -544,5 +556,213 @@ public class MainWindowViewModel : ViewModelBase
         }
 
         return studentsList;
+    }
+
+    private List<Clients> _studentsWitoutGroupsFull;
+    private Clients? _studentsWithoutGroupSelectedItem;
+
+    public Clients? StudentsWithoutGroupSelectedItem
+    {
+        get => _studentsWithoutGroupSelectedItem;
+        set => this.RaiseAndSetIfChanged(ref _studentsWithoutGroupSelectedItem, value);
+    }
+
+    private AvaloniaList<Clients> _clientsWithoutGroupsList = new AvaloniaList<Clients>();
+
+    public AvaloniaList<Clients> StudentWithoutGroupsList
+    {
+        get => _clientsWithoutGroupsList;
+        set => this.RaiseAndSetIfChanged(ref _clientsWithoutGroupsList, value);
+    }
+
+    public List<Clients> GetClientsWithoutGroup()
+    {
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            connection.Open();
+
+            string query = "SELECT Clients.* FROM Clients " +
+                           "LEFT JOIN ClientGroup ON Clients.Id = ClientGroup.Client " +
+                           "WHERE ClientGroup.Group IS NULL";
+
+            using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            {
+                List<Clients> clients = new List<Clients>();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Clients client = new Clients
+                        {
+                            Id = Convert.ToInt32(reader["Id"]),
+                            FirstName = reader["FirstName"].ToString(),
+                            LastName = reader["LastName"].ToString(),
+                            PhoneNumber = reader["PhoneNumber"].ToString(),
+                            BirthDate = ParseNullableDateTimeOffset(reader["BirthDate"]),
+                            PreviousExperience = reader["PreviousExperience"].ToString(),
+                            LanguageNeeds = reader["LanguageNeeds"].ToString(),
+                            LanguageLevel = reader["LanguageLevel"].ToString()
+                        };
+                        clients.Add(client);
+                    }
+                }
+
+                return clients;
+            }
+        }
+    }
+
+    private DateTimeOffset? ParseNullableDateTimeOffset(object value)
+    {
+        if (value == DBNull.Value || value == null)
+        {
+            return null;
+        }
+
+        if (DateTimeOffset.TryParse(value.ToString(), out DateTimeOffset result))
+        {
+            return result;
+        }
+
+        return null;
+    }
+
+    public void AddClientToGroup()
+    {
+        if (StudentsWithoutGroupSelectedItem is null)
+        {
+            return;
+        }
+
+        int clid = StudentsWithoutGroupSelectedItem.Id;
+        int groupid = GroupSelectedItem.Id;
+        using MySqlConnection connection = new MySqlConnection(connectionString);
+        connection.Open();
+
+        string insertQuery = """
+                             UPDATE ClientGroup
+                             SET ClientGroup.`Group` = @Group
+                             WHERE ClientGroup.Client = @Client;
+                             select C.Price
+                             from `Groups` g
+                                      join pro1_23.Courses C on g.Course = C.Id
+                             where g.Id = @Group
+                             group by g.Id;
+                             """;
+        using var cmd = new MySqlCommand(insertQuery, connection);
+        cmd.Parameters.AddWithValue("@Client", clid);
+        cmd.Parameters.AddWithValue("@Group", groupid);
+        var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            int? price = null;
+            try
+            {
+                price = reader.GetInt32("Price");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            if (price.HasValue)
+            {
+                
+                using MySqlConnection connection2 = new MySqlConnection(connectionString);
+                connection2.Open();
+                string insQuery =
+                    "INSERT INTO FinancialOperations(Client, Sum, OperationDate, PaymentState) VALUES (@Client, @Sum, @OperationDate, @PaymentState)";
+                using MySqlCommand ccc = new MySqlCommand(insQuery, connection2);
+                ccc.Parameters.AddWithValue("@Client", clid);
+                ccc.Parameters.AddWithValue("Sum", price.Value);
+                ccc.Parameters.AddWithValue("OperationDate", DateTimeOffset.Now);
+                ccc.Parameters.AddWithValue("PaymentState", false);
+                ccc.ExecuteNonQuery();
+                _financialOperationsFull = GetFinancialDataFromDatabase();
+                FinancialList = new(_financialOperationsFull);
+                // FinancialList.Add(new FinancialOperations
+                // {
+                //     
+                //     Client = StudentsWithoutGroupSelectedItem.Id,
+                //     
+                //     Sum = price.Value,
+                //     OperationDate = DateTimeOffset.Now,
+                //     PaymentState = false
+                // });
+            }
+            else
+            {
+                throw new NullReferenceException("Price = null");
+            }
+        }
+
+    }
+
+
+    private AvaloniaList<FinancialOperations> _financialOperationsList = new AvaloniaList<FinancialOperations>();
+    private FinancialOperations _financialselectedItem;
+    private List<FinancialOperations> _financialOperationsFull;
+
+    public AvaloniaList<FinancialOperations> FinancialList
+    {
+        get => _financialOperationsList;
+        set => this.RaiseAndSetIfChanged(ref _financialOperationsList, value);
+    }
+
+    public FinancialOperations FinancialSelectedItem
+    {
+        get => _financialselectedItem;
+        set => this.RaiseAndSetIfChanged(ref _financialselectedItem, value);
+    }
+
+    public List<FinancialOperations> GetFinancialDataFromDatabase()
+    {
+        List<FinancialOperations> data = new List<FinancialOperations>();
+
+        MySqlConnection connection = new MySqlConnection(connectionString);
+
+        try
+        {
+            connection.Open();
+
+            string query = """
+                           SELECT F.*,
+                                  C.FirstName AS ClientName,
+                                  C.LastName AS ClientSurname,
+                                  C2.Price
+                           FROM FinancialOperations F
+                                    JOIN Clients C ON F.Client = C.Id
+                                    JOIN ClientGroup CG on C.Id = CG.Client
+                                    JOIN `Groups` G on CG.`Group` = G.Id
+                                    JOIN Courses C2 on G.Course = C2.Id
+                           """;
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                FinancialOperations item = new FinancialOperations()
+                {
+                    Id = reader.GetInt32("Id"),
+                    Client = reader.GetInt32("Client"),
+                    Sum = reader.GetInt32("Sum"),
+                    OperationDate = reader.GetDateTimeOffset("OperationDate"),
+                    PaymentState = reader.GetBoolean("PaymentState"),
+                    ClientName = reader.GetString("ClientName"),
+                    ClientSurname = reader.GetString("ClientSurname")
+                };
+                data.Add(item);
+            }
+        }
+        catch (MySqlException ex)
+        {
+            Console.WriteLine("Ошибка подключения к базе данных: " + ex.Message);
+        }
+        finally
+        {
+            connection.Close();
+        }
+
+        return data;
     }
 }

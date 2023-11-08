@@ -10,7 +10,7 @@ public class Clients
     public string LastName { get; set; }
     public string PhoneNumber { get; set; }
     public string LanguageLevel { get; set; }
-    public DateTimeOffset BirthDate { get; set; }
+    public Nullable<DateTimeOffset> BirthDate { get; set; }
     public string PreviousExperience { get; set; }
     public string LanguageNeeds { get; set; }
 }
