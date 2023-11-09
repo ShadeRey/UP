@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="UPNew/App.axaml" value="UPNew/UPNew.csproj" />
+        <entry key="UPNew/Views/ADs.axaml" value="UPNew/UPNew.csproj" />
+        <entry key="UPNew/Views/CourseGrid.axaml" value="UPNew/UPNew.csproj" />
+        <entry key="UPNew/Views/FinancialOperationGrid.axaml" value="UPNew/UPNew.csproj" />
+        <entry key="UPNew/Views/GroupGrid.axaml" value="UPNew/UPNew.csproj" />
+        <entry key="UPNew/Views/LogInUp.axaml" value="UPNew/UPNew.csproj" />
+        <entry key="UPNew/Views/MainWindow.axaml" value="UPNew/UPNew.csproj" />
+        <entry key="UPNew/Views/ScheduleGrid.axaml" value="UPNew/UPNew.csproj" />
+        <entry key="UPNew/Views/StudentGrid.axaml" value="UPNew/UPNew.csproj" />
+        <entry key="UPNew/Views/test.axaml" value="UPNew/UPNew.csproj" />
+        <entry key="UPNew/Views/testgrid.axaml" value="UPNew/UPNew.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

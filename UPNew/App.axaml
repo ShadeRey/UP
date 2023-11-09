@@ -1,0 +1,31 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="UPNew.App"
+             xmlns:local="using:UPNew"
+             RequestedThemeVariant="Default">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+  
+    <Application.Styles>
+            <FluentTheme />
+            <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+            <Style Selector="TextBox">
+                <Setter Property="FontFamily" Value="avares://UPNew/Assets/Supercell-Magic.ttf#Supercell-Magic" />
+            </Style>
+            <Style Selector="TextBlock">
+                <Setter Property="FontFamily" Value="avares://UPNew/Assets/Supercell-Magic.ttf#Supercell-Magic" />
+            </Style>
+            <Style Selector="Button">
+                <Setter Property="FontFamily" Value="avares://UPNew/Assets/Supercell-Magic.ttf#Supercell-Magic" />
+            </Style>
+            <Style Selector="DatePicker">
+                <Setter Property="FontFamily" Value="avares://UPNew/Assets/Supercell-Magic.ttf#Supercell-Magic" />
+            </Style>
+            <Style Selector="ContextMenu">
+                <Setter Property="FontFamily" Value="avares://UPNew/Assets/Supercell-Magic.ttf#Supercell-Magic" />
+            </Style>
+        </Application.Styles>
+</Application>

@@ -1,0 +1,69 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:global="clr-namespace:"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="UPNew.Views.LogInUp"
+        Title="Authorization"
+        SystemDecorations="None"
+        Background="Transparent"
+        Width="500"
+        Height="500">
+    <Window.Styles>
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="White"></Setter>
+            <Setter Property="Foreground" Value="Black"></Setter>
+            <Setter Property="Width" Value="200"></Setter>
+            <Setter Property="Height" Value="50"></Setter>
+            <Setter Property="BorderThickness">
+                <Thickness>
+                    2 3 2 1
+                </Thickness>
+            </Setter>
+            <Setter Property="BorderBrush" Value="Black"></Setter>
+            <Setter Property="FontWeight" Value="Bold"></Setter>
+            <Style Selector="^:focus /template/ Border">
+                <Setter Property="BorderBrush" Value="Black" />
+                <Setter Property="BorderThickness">
+                    <Thickness>
+                        2 3 2 1
+                    </Thickness>
+                </Setter>
+                <Setter Property="Margin" Value="0 0 0 0"></Setter>
+                <Setter Property="CornerRadius" Value="3 3 3 3"></Setter>
+            </Style>
+            <Style Selector="^:focus-within /template/ Border">
+                <Setter Property="BorderBrush" Value="Black" />
+            </Style>
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="Background" Value="#72a21f"></Setter>
+            <Setter Property="Foreground" Value="#fdffff"></Setter>
+            <Setter Property="BorderThickness" Value="3"></Setter>
+            <Setter Property="BorderBrush" Value="#000600"></Setter>
+            <Setter Property="CornerRadius" Value="10"></Setter>
+            <Setter Property="Height" Value="50"></Setter>
+            <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+            <Style Selector="^:pointerover /template/ ContentPresenter">
+                <Setter Property="Background" Value="#72a21f"></Setter>
+                <Setter Property="Foreground" Value="#fdffff"></Setter>
+                <Setter Property="BorderThickness" Value="3"></Setter>
+                <Setter Property="BorderBrush" Value="#000600"></Setter>
+            </Style>
+        </Style>
+    </Window.Styles>
+    <Border Background="#e9e6e1"
+            BorderBrush="#625353"
+            BorderThickness="6"
+            CornerRadius="20"
+            Padding="4">
+        <StackPanel Spacing="10" x:Name="AuthPanel">
+            <TextBlock Margin="0 50 0 0" HorizontalAlignment="Center" FontFamily="avares://UPNew/Assets/Supercell-Magic.ttf#Supercell-Magic" Text="Authorization"></TextBlock>
+            <TextBox Name="EmailBox" FontFamily="avares://UPNew/Assets/Supercell-Magic.ttf#Supercell-Magic"></TextBox>
+            <TextBox Name="PasswordBox" FontFamily="avares://UPNew/Assets/Supercell-Magic.ttf#Supercell-Magic"></TextBox>
+            <Button FontFamily="avares://UPNew/Assets/Supercell-Magic.ttf#Supercell-Magic" Content="Enter" Click="Button_OnClick"></Button>
+        </StackPanel>
+    </Border>
+</Window>
