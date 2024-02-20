@@ -354,7 +354,7 @@ public class MainWindowViewModel : ViewModelBase
         PreviousExperience = string.Empty;
     }
 
-    private void SearchBySelectedColumn()
+    public void SearchBySelectedColumn()
     {
         string searchText = SearchText;
         if (searchText != null)
